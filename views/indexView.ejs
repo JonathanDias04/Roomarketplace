@@ -1,0 +1,54 @@
+<%- include("./partials/header.ejs") %>
+    <%- include("./partials/navbar.ejs") %>
+
+    <article class="container">
+
+        <h3 class="mt-5">Categorias</h3>
+        <hr>
+
+        <div class="row d-flex justify-content-center" id="categorias">
+
+            <% categorias.forEach(categoria => { %>
+                <div class="col-lg-4">
+                    <div class="card text-white bg-dark mb-3 text-wrap ms-auto me-auto" style="max-width: 18rem;">
+                        <img src="/img/categorias/<%= categoria.NOME_IMAGEM %>.jpg" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= categoria.NOME_CATEGORIA %></h5>
+                            <p class="card-text texto_overflow"><%= categoria.DESCRICAO_CATEGORIA %></p>
+                            <a href="/produtos/<%= categoria.SLUG_CATEGORIA %>" class="btn btn-success">Explorar</a>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+
+            <!--<div class="col-lg-4">
+                <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+                    <img src="/img/categorias/brinquedos.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Brinquedos e jogos</h5>
+                        <p class="card-text texto_overflow">Brinquedos infantis e qualquer tipo de jogo.</p>
+                        <a href="#" class="btn btn-success">Explorar</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+                    <img src="/img/categorias/brinquedos.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Brinquedos e jogos</h5>
+                        <p class="card-text texto_overflow">Brinquedos infantis e qualquer tipo de jogo.</p>
+                        <a href="#" class="btn btn-success">Explorar</a>
+                    </div>
+                </div>
+            </div>-->
+        </div>
+
+        <form action="/produto/anunciar_produto" method="POST">
+            <input type="text" name="titulo">
+            <button type="submit">ENviar</button>
+        </form>
+
+    </article>
+
+<%- include("./partials/footer.ejs") %>
