@@ -3,15 +3,61 @@ const app = express();
 const connection = require("./database/database");
 const router = express.Router();
 const dateFormat = require('dateformat');
+const session = require("express-session");
+const { Op } = require("sequelize");
+const { default: slugify } = require("slugify");
+const multer = require("multer");
+const bodyParser = require("body-parser");
+
+const upload = multer({dest: "uploads/"})
 
 // ViewEngine
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
+app.use(express.urlencoded({extended: true}));
+
+// Session 
+app.use(session({
+    secret: "asdfasdgasdfgserwe",
+    cookie: {
+        maxAge: 7200000
+    }
+}));
+
+app.get("/session", (req, res) => {
+    req.session.data = true;
+    if(req.session.data) {
+        res.send("Sessão criada!");
+    }
+    else {
+        res.send("Sessão criada!");
+    }
+});
+
+app.get("/leitura", (req, res) => {
+    res.json({
+        data: req.session.data,
+        usuario: req.session.usuarioData
+    })
+});
 
 // MODEL
 const Categoria = require("./categorias/DBcategorias");
 const Produto = require("./produtos/DBprodutos");
 const EstadoProduto = require("./produtos/EstadoProduto/DBEstadoProduto");
+const Cidade = require("./user/regiao/DBCidades");
+const Estado = require("./user/regiao/DBEstados");
+const User = require("./user/DBUsers");
+const Notificacao = require("./user/DBNotificacoesProdutos");
+const Contatos = require("./user/contato/DBContatosUser");
+const TipoContatos = require("./user/contato/DBTiposContato");
+const Imgprodutos = require("./produtos/DBimgprodutos");
+
+// CONTROLLER
+const ProdutoController = require("./produtos/ProdutosController");
+const UserController = require("./user/UserController");
+app.use("/", ProdutoController);
+app.use("/", UserController);
 
 //DATABASE
 connection.authenticate().then(() => {
@@ -23,55 +69,71 @@ connection.authenticate().then(() => {
 //---------------- ROTAS ----------------------
 app.get("/", (req, res) => {
     Categoria.findAll().then(categoria => {
-        console.log(categoria);
-        res.render("indexView", {categorias: categoria})
+            req.session.convidado = true;
+            if(req.session.usuarioData !== undefined) {
+                Notificacao.findAll({where: { FK_USER_PRODUTO: req.session.usuarioData.id }, include: [
+                    {model: User, required: false},
+                    {model: Produto, required: false}
+                ],}).then(notificacao => {
+                    console.log(notificacao)
+                    User.findOne({ where: {
+                        ID_USUARIO: req.session.usuarioData.id
+                    }}).then(usuario => {     
+                        res.render("indexView", {categorias: categoria, usuarioData: req.session.usuarioData, usuario: usuario, notificacoes: notificacao})
+                    })
+                })
+            } else {
+                res.render("indexView", {categorias: categoria})
+            }
+        
     }).catch((error) => {
         console.log(error)
     })
 });
 
-app.post("/produto/anunciar_produto", (req, res) => {
-    var titulo = 'computador';
-    var descricao = 'computador maneiro';
-    var valor = 10000;
-    var condicao = 1;
-    var categoria = 1;
-    Produto.create({
-        TITULO_PRODUTO: titulo,
-        DESCRICAO_PRODUTO: descricao,
-        VALOR_PRODUTO: valor,
-        DATA_ATUALIZACAO: dateFormat(new Date(), "yyyy-mm-dd h:MM:ss"),
-        FK_ESTADO_PRODUTO: condicao,
-        FK_CATEGORIA: categoria
-    }).then(() => {
-        console.log("criou");
-        res.send("oi")
-    }).catch(error => {
-        console.log("VISH MEU PARÇA");
-    })
-});
-
-app.get("/produtos/:slug_categoria", (req, res) => {
+app.get("/:slug_categoria/produtos", (req, res) => {
     var slug = req.params.slug_categoria;
-    Categoria.findOne({
-        attributes: ['ID_CATEGORIA'],
-        where: {
-            SLUG_CATEGORIA: slug
-        }
-    }).then(categoria => {
-        console.log(categoria)
-        Produto.findAll({
+    Categoria.findAll().then(categorias => {
+        Categoria.findOne({
+            attributes: ['ID_CATEGORIA', 'NOME_CATEGORIA'],
             where: {
-                FK_CATEGORIA: categoria['ID_CATEGORIA']
+                SLUG_CATEGORIA: slug
             }
-        }).then(produto => {
-            console.log(produto)
-            res.render("produtos", { produtos_categoria: produto})
+        }).then((categoria) => {
+            Produto.findAll({
+                where: {
+                    FK_CATEGORIA: categoria.ID_CATEGORIA
+                },
+                order: [
+                    ['VALOR_PRODUTO', 'DESC']
+                ]
+            }).then(produto => {
+                console.log(categoria['NOME_CATEGORIA']);
+                Imgprodutos.findAll().then(img => {
+                    if(req.session.usuarioData !== undefined) {
+                        User.findOne({ where: {ID_USUARIO: req.session.usuarioData.id} }).then(usuario => {
+                            Notificacao.findAll({where: { FK_USER_PRODUTO: req.session.usuarioData.id }, include: [
+                                {model: User, required: false},
+                                {model: Produto, required: false}
+                            ],}).then(notificacao => {
+                                console.log(notificacao);
+                                res.render("produtos/produtos", { produtos: produto, imgProduto: img, categoria: categoria['NOME_CATEGORIA'], usuarioData: req.session.usuarioData, usuario: usuario, notificacoes: notificacao, categorias: categorias})
+                            })
+                        })
+                    } else {
+                        res.render("produtos/produtos", { produtos: produto, imgProduto: img, categoria: categoria['NOME_CATEGORIA'], categorias: categorias})
+                    }
+                }).catch(error => {
+                    console.log(error);
+                })
+            }).catch(error => {
+                console.log(error);
+            })
         }).catch(error => {
-            console.log(error);
+            console.log(error)
         })
     })
-})
+});
 
 app.listen(5000, () => {
     console.log("O servidor está rodando")

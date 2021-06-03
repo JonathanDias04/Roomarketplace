@@ -1,5 +1,5 @@
 body {
-    background-color: antiquewhite;
+    background-color: rgb(255, 255, 255);
     font-family: 'Poppins', sans-serif;
 }
 
@@ -9,7 +9,7 @@ a {
 }
 
 ul{
-    list-style: none;
+  text-align:left;
 }
 
 img {
@@ -23,6 +23,23 @@ aside {
     color: white;
 }
 
+footer {
+  margin-top: 80px;
+}
+
+.card_custom {
+  /* Add shadows to create the "card" effect */
+  box-shadow: 5px 5px 10px rgba(0,0,0,0.5);
+}
+
+/* On mouse-over, add a deeper shadow */
+.card_custom:hover {
+  box-shadow: 5px 5px 10px rgba(0,0,0,0.5);
+  transform: translateY(5px);
+      -webkit-animation: gradientBG 1.5s ease-in-out forwards;
+      animation: gradientBG 10.5s ease-in-out forwards;
+}
+
 #btn_menu {
     display: none;
 }
@@ -30,17 +47,415 @@ aside {
 #nav_menu {
     display: block;
     background-color: #474849;
-    width: 350px;
+    width: 330px;
     height: 100%;
     color: white;
 }
 
+/* MENU LATERAL FILTROS */
+#wrapper {
+    overflow-x: hidden;
+ }
+
+#sidebar-wrapper {
+width: 320px;
+  min-height: 100vh;
+  margin-left: -15rem;
+  -webkit-transition: margin .25s ease-out;
+  -moz-transition: margin .25s ease-out;
+  -o-transition: margin .25s ease-out;
+  transition: margin .25s ease-out;
+}
+
+#sidebar-wrapper .sidebar-heading {
+  padding: 0.875rem 1.25rem;
+  font-size: 1.2rem;
+}
+
+#sidebar-wrapper .row {
+  width: 100%;
+}
+
+#page-content-wrapper {
+  min-width: 100vw;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+  margin-left: 0;
+}
+
+@media (min-width: 768px) {
+  #sidebar-wrapper {
+    margin-left: 0;
+  }
+
+  #page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+  }
+
+  #wrapper.toggled #sidebar-wrapper {
+    margin-left: -15rem;
+  }
+}
+
+#div_filtrar {
+    position: fixed;
+    bottom: 15px;
+    left: 15px;
+}
+
+#btn_filtrar {
+    width: 225px;
+}
+
 .texto_overflow {
     display: -webkit-box;
-    -webkit-line-clamp: 2; /** número de linhas que você quer exibir */
+    -webkit-line-clamp: 3; /** número de linhas que você quer exibir */
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
+.texto_overflow_notif {
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /** número de linhas que você quer exibir */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
+.back_produtos {
+  background-color: rgb(209, 209, 209);
+  border-radius: 5px;
+  margin-bottom: 30px;
+}
+
+.dados_produto {
+  width: 95%;
+  margin-top: 20px;
+  margin-right: 10px;
+  text-align: right;
+}
+
+.img_card {
+  object-fit: cover;
+  min-height: 190px;
+  max-height: 190px;
+  height: 190px;
+}
+
+/* UPLOAD FILE IMAGE */
+
+.file-uploader {
+  background-color: #dbefe9;
+  border-radius: 3px;
+  color: #242424;
+}
+
+.file-uploader__message-area {
+  font-size: 18px;
+  padding: 1em;
+  text-align: center;
+  color: #377a65;
+}
+
+.file-list {
+  background-color: white;
+  font-size: 16px;
+}
+
+.file-list__name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-list li {
+  height: 50px;
+  line-height: 50px;
+  margin-left: 0.5em;
+  border: none;
+  overflow: hidden;
+}
+
+.removal-button {
+  width: 20%;
+  border: none;
+  background-color: #d65d38;
+  color: white;
+}
+.removal-button::before {
+  content: "X";
+}
+.removal-button:focus {
+  outline: 0;
+}
+
+.file-chooser {
+  padding: 1em;
+  transition: background-color 1s, height 1s;
+}
+.file-chooser p {
+  font-size: 18px;
+  padding-top: 1em;
+}
+
+.file-uploader {
+  max-width: 400px;
+  height: auto;
+  margin: 2em auto;
+}
+.file-uploader * {
+  display: block;
+}
+.file-uploader input[type=submit] {
+  margin-top: 2em;
+  float: right;
+}
+
+.file-list {
+  margin: 0 auto;
+  max-width: 90%;
+}
+
+.file-list__name {
+  max-width: 70%;
+  float: left;
+}
+
+.removal-button {
+  display: inline-block;
+  height: 100%;
+  float: right;
+}
+
+.file-chooser {
+  width: 90%;
+  margin: 0.5em auto;
+}
+
+.file-chooser__input {
+  margin: 0 auto;
+}
+
+.file-uploader__submit-button {
+  width: 100%;
+  border: none;
+  font-size: 1.5em;
+  padding: 1em;
+  background-color: #72bfa7;
+  color: white;
+}
+.file-uploader__submit-button:hover {
+  background-color: #a7d7c8;
+}
+
+.file-list li:after, .file-uploader:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.hidden {
+  display: none;
+}
+.hidden input {
+  display: none;
+}
+
+.error {
+  background-color: #d65d38;
+  color: white;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+ul,
+li {
+  margin: 0;
+  padding: 0;
+}
+
+
+/* NENHUMA POSTAGEM FEITA */
+
+@import url("https://fonts.googleapis.com/css?family=Cabin+Sketch");
+
+.error {
+  min-height: 100%;
+  background-color: white;
+}
+
+.errorH1 {
+  font-family: "Cabin Sketch", cursive;
+  font-size: 3em;
+  text-align: center;
+  opacity: 0.8;
+  order: 1;
+  font-weight: bold;
+}
+
+.errorH1 small {
+  display: block;
+}
+
+.site {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 0 auto;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.sketch {
+  position: relative;
+  height: 400px;
+  min-width: 400px;
+  margin: 0;
+  overflow: visible;
+  order: 2;
+}
+
+.bee-sketch {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.red {
+  background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-1.png) no-repeat center center;
+  opacity: 1;
+  animation: red 3s linear infinite, opacityRed 5s linear alternate infinite;
+}
+
+.blue {
+  background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-1.png) no-repeat center center;
+  opacity: 0;
+  animation: blue 3s linear infinite, opacityBlue 5s linear alternate infinite;
+}
+
+@media only screen and (min-width: 780px) {
+  .site {
+    flex-direction: row;
+    padding: 1em 3em 1em 0em;
+  }
+
+  .errorH1 {
+    text-align: right;
+    order: 2;
+    padding-bottom: 2em;
+    padding-left: 2em;
+  }
+
+  .sketch {
+    order: 1;
+  }
+}
+@keyframes blue {
+  0% {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-1.png);
+  }
+  9.09% {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-2.png);
+  }
+  27.27% {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-3.png);
+  }
+  36.36% {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-4.png);
+  }
+  45.45% {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-5.png);
+  }
+  54.54% {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-6.png);
+  }
+  63.63% {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-7.png);
+  }
+  72.72% {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-8.png);
+  }
+  81.81% {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-9.png);
+  }
+  100% {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-1.png);
+  }
+}
+@keyframes red {
+  0% {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-1.png);
+  }
+  9.09% {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-2.png);
+  }
+  27.27% {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-3.png);
+  }
+  36.36% {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-4.png);
+  }
+  45.45% {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-5.png);
+  }
+  54.54% {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-6.png);
+  }
+  63.63% {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-7.png);
+  }
+  72.72% {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-8.png);
+  }
+  81.81% {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-9.png);
+  }
+  100% {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-1.png);
+  }
+}
+@keyframes opacityBlue {
+  from {
+    opacity: 0;
+  }
+  25% {
+    opacity: 0;
+  }
+  75% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes opacityRed {
+  from {
+    opacity: 1;
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0.3;
+  }
+  to {
+    opacity: 0.3;
+  }
+}

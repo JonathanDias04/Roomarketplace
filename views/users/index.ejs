@@ -1,0 +1,38 @@
+<%- include("../../partials/header.ejs") %>
+    <%- include("../../partials/navbar.ejs") %>
+
+    <div class="container mt-5">
+        <h2>Usuários</h2>
+        <a class="btn btn-success my-3" href="/admin/users/create">Criar novo usuário</a>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>E-mail</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% users.forEach(user => { %>
+                    <tr>
+                        <td><%= user.id %></td>
+                        <td><%= user.email %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+<%- include("../../partials/footer.ejs") %>
+
+<script>
+    function confirmDelete(event, form) {
+        event.preventDefault();
+        var decision = confirm("Deseja realmente deletar esta categoria");
+        if(decision) {
+            form.submit()
+        } else {
+            console.log("Escolheu não deletar");
+        }
+    }
+</script>

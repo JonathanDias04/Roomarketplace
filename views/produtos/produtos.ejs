@@ -1,0 +1,155 @@
+<%- include("../partials/header.ejs") %>
+    <%- include("../partials/navbar.ejs") %>
+
+
+    <div class="d-flex" id="wrapper">
+
+        <!-- Sidebar -->
+        <div class="bg-dark border-right" id="sidebar-wrapper">
+          <div class="sidebar-heading text-light">Filtros</div>
+          <!--<div class="list-group list-group-flush">
+            <a href="#" class="list-group-item list-group-item-action bg-light">Dashboard</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">Shortcuts</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">Overview</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">Events</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">Profile</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">Status</a>  
+          </div>-->
+
+        <form action="/produtos/filtrar" method="GET">
+            <div class="row mt-3 ps-4">
+                <label for="precos" class="text-light mb-2">Preços</label>
+                <div class="input-group mb-3" style="width: 75%;">
+                    <span class="input-group-text">Min</span>
+                    <input type="text" name="min" class="form-control" aria-label="Amount (to the nearest dollar)">
+                </div>
+
+                <div class="input-group mb-5" style="width: 75%;">
+                    <span class="input-group-text">Max</span>
+                    <input type="text" name="max" class="form-control" aria-label="Amount (to the nearest dollar)">
+                </div>
+
+                <label for="" class="text-light mb-2">Ordenar</label>
+                <select class="form-select ms-2 mb-5" name="ordem" aria-label="Default select example" style="width: 75%;">
+                    <option selected>Selecione</option>
+                    <option value="1">Menor preço</option>
+                    <option value="2">Maior preço</option>
+                </select>
+
+                <label for="" class="text-light mb-2 ms-0">Região</label>
+                <select class="js-example-basic-single" name="state">
+                    <option value="AL">Caraguatatuba</option>
+                      ...
+                    <option value="WY">São Sebastião</option>
+                  </select>
+            </div>
+            <input type="hidden" name="categoria" value="<%= categoria %>">
+            <div class="row" id="div_filtrar">
+                <div class="col-12">
+                    <button class="btn btn-success" id="btn_filtrar">
+                        Filtrar
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        </div>
+        <!-- /#sidebar-wrapper -->
+    
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+    
+          <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+            <button class="btn btn-primary ms-3" id="menu-toggle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-filter-left" viewBox="0 0 16 16">
+                    <path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+                Filtros
+
+            </button>
+    
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+
+          </nav>
+    
+          <article class="container-fluid">
+
+            <div class="row mt-5 px-5">
+                <div class="row justify-content-center">
+                    <div class="col-11">
+                        <% if(typeof pesquisa !== 'undefined') { %>
+                            <h3>Produtos encontrados</h3>
+                        <% } else { %>
+                            <h3><%= categoria %></h3>
+                        <% } %>
+                        <hr>
+                    </div>
+                </div>
+                
+                <% if(produtos.length > 0) {
+                    produtos.forEach(produto => { %>
+                        <div class="col-lg-3">
+                            <a href="/produto/visualizar/<%= produto.SLUG_PRODUTO %>">
+                                <div class="card text-white bg-dark mb-3 ms-auto mt-3 me-auto" style="max-width: 18rem;">
+                                    <div id="carouselExampleControls" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                                        <div class="carousel-inner">
+                                            <% let cont = 0; imgProduto.forEach(img => { %>               
+                                                <% if(img.FK_PRODUTO == produto.ID_PRODUTO) { %>
+                                                    <div <% if(cont === 0){ %> class="carousel-item active" <% } else { %> class="carousel-item" <% } %> data-bs-interval="2000" >
+                                                        <img src="/img/produtos/<%= img.KEY_IMG.replace(/'/g, '') %>" class="d-block w-100" alt="...">     
+                                                    </div>
+                                                <% cont = cont + 1; }  %>  
+                                            <% }) %>                                                                                                                                                
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <h6 class="card-title texto_overflow"><%= produto.TITULO_PRODUTO %></h6>
+                                        <h5 class="card-text">R$ <%= produto.VALOR_PRODUTO %>,00</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+
+                    <div class="error d-flex">
+                        <div class="site">
+                            <div class="sketch">
+                                <div class="bee-sketch red"></div>
+                                <div class="bee-sketch blue"></div>
+                            </div>
+                        
+                        <h1 class="errorH1 text-dark">Ops!
+                            <small class="text-dark">Não há produtos</small></h1>
+                        </div>
+                    </div>
+
+                <% } %>
+            </div>
+            
+          </article>
+        </div>
+        <!-- /#page-content-wrapper -->
+    
+      </div>
+
+     <!-- JavaScript -->
+    <script src="/js/script.js"></script>
+    <script src="/js/jquery/jquery.min.js"></script>
+
+    <!-- Menu Toggle Script -->
+    <script>
+        $(document).ready(function() {
+            $('.js-example-basic-single').select2();
+        });
+
+        $("#menu-toggle").click(function(e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+        });
+    </script>
+      <!-- /#wrapper -->
+
+<%- include("../partials/footer.ejs") %>

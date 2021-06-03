@@ -1,0 +1,102 @@
+<%- include("./../partials/header.ejs") %>
+    <%- include("./../partials/navbar.ejs") %>
+
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header">Cadastro de Usuário</div>
+            <div class="card-body">
+                <form action="/users/create" method="POST">
+                    <div class="row">
+                        <div class="col">
+                            <label for="usuario">Nome Usuário</label>
+                            <input type="text" id="usuario" class="form-control mb-3" name="usuario" placeholder="Digite seu usuario">
+                        </div>
+                        <div class="col">
+                            <label for="email">E-mail</label>
+                            <input type="email" id="email" class="form-control mb-3" name="email" placeholder="email@exemplo.com">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <label for="id_regiao_cidade" class="bold subdados">Estado</label>
+                            <select id="id_regiao_estado" class="form-select mb-3" name="estado" class="select" title="Selecione uma opção" onchange="buscar_cidades()">
+                                <option value="">Selecione uma opção</option>
+                            
+                            <% estados.forEach(estado => { %>
+                                <option value="<%= estado.ID_ESTADO %>">
+                                    <%= estado.NOME_ESTADO %>
+                                </option>
+                            <% }); %>
+                            </select>
+                        </div>
+                        <div class="col">
+
+                            <label for="id_regiao_cidade" class="bold subdados">Cidade</label>
+                            <select id="id_regiao_cidade" name="cidade" class="form-select mb-3" class="select" title="Selecione uma opção">
+                                <option value="">Selecione uma opção</option>
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="row my-2">
+                            <div class="col">
+                                <h6 for="" class="bold">Contato 1</h6>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label for="tipocontato1" class="bold subdados">Tipo de Contato</label>
+                            <select id="tipocontato1" class="form-select mb-3" name="tipoContato1" class="select" title="Selecione uma opção">
+                                <option value="">Selecione uma opção</option>
+                            
+                                <% tiposContatos.forEach(tipos => { %>
+                                    <option value="<%= tipos.ID_TIPO %>">
+                                        <%= tipos.NOME_TIPO_CONTATO %>
+                                    </option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div class="col">
+
+                            <label for="contato1" class="bold subdados">Contato</label>
+                            <input type="text" class="form-control" name="contato1" id="contato1">
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="row my-2">
+                            <div class="col">
+                                <h6 for="" class="bold">Contato 2</h6>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label for="tipocontato2" class="bold subdados">Tipo de Contato</label>
+                            <select id="tipocontato2" class="form-select mb-3" name="tipoContato2" class="select" title="Selecione uma opção">
+                                <option value="">Selecione uma opção</option>
+                            
+                                <% tiposContatos.forEach(tipos => { %>
+                                    <option value="<%= tipos.ID_TIPO %>">
+                                        <%= tipos.NOME_TIPO_CONTATO %>
+                                    </option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div class="col">
+
+                            <label for="contato2" class="bold subdados">Contato</label>
+                            <input type="text" class="form-control" name="contato2" id="contato2">
+
+                        </div>
+                    </div>
+
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" class="form-control mb-3" name="senha" placeholder="Digite sua senha...">
+
+                    <input type="submit" class="btn btn-block btn-primary" value="Cadastrar">
+                </form>
+            </div>
+        </div>
+    </div>

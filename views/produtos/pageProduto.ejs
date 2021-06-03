@@ -1,0 +1,266 @@
+<%- include("../partials/header.ejs") %>
+    <%- include("../partials/navbar.ejs") %>
+
+        <article class="container ps-0">
+
+            <div class="row mt-5 ps-0 pb-5 d-flex justify-content-between back_produtos">
+                <div class="col-7 m-4 ps-0">
+                    <div id="carouselExampleIndicators" class="carousel slide carousel-fade ps-0 ms-0 rounded-3" data-bs-ride="carousel" style="width: 95%;">
+                        <div class="carousel-indicators">
+                          <% for(var i = 0; i < imgProduto.length; i++) { %>
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="<%= i %>" <% if(i === 0){ %> class="active" <% } %> <% if(i == 0){ %> aria-current="true" <% } %> aria-label="Slide <%= i + 1 %>"></button>
+                          <% } %>
+                        </div>
+                        <div class="carousel-inner rounded-3">
+                          <% for(var i = 0; i < imgProduto.length; i++) { %>
+                            <div <% if(i === 0){ %> class="carousel-item active" <% } else { %> class="carousel-item" <% } %> >
+                              <img src="/img/produtos/<%= imgProduto[i].KEY_IMG %>" class="d-block w-100" alt="...">
+                            </div>
+                          <% } %>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Next</span>
+                        </button>
+                      </div>
+                </div>
+
+                <div class="col-lg">
+                    <div class="dados_produto d-grid gap-2 d-md-block">
+                        <h3 class="text-right"><%= produto.TITULO_PRODUTO %></h3>
+                        <p class="mt-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                                <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                            </svg>
+                            <%= usuario_produto.TB_CIDADE.NOME_CIDADE %> - <%= uf.TB_ESTADO.UF_ESTADO %>
+                        </p>
+                        <p><span>Condição:</span>&nbsp;&nbsp;&nbsp; <%= produto.TB_ESTADO_PRODUTO.ESTADO_PRODUTO %></p>
+                        <h5 class="mt-4">R$ <%= produto.VALOR_PRODUTO %>,00</h5>
+                        <p class="mt-5">
+                          <%= produto.DESCRICAO_PRODUTO %>
+                        </p>
+                        
+                        <% if(typeof usuarioData !== 'undefined') { %>
+                          <% if(typeof result_notif === 'undefined' && usuarioData.id != produto.FK_USUARIO) { %>
+                            <form action="/produto/notificar" method="POST">
+                              <input type="hidden" name="produto" value="<%= produto.TITULO_PRODUTO %>">
+                              <input type="hidden" name="produtoId" value="<%= produto.ID_PRODUTO %>">
+                              <input type="hidden" name="usuarioId" value="<%= produto.FK_USUARIO %>">
+                              <input type="hidden" name="slug_produto" value="<%= produto.SLUG_PRODUTO %>">
+                              <button class="btn btn-success">Notificar interesse ao vendedor</button>
+                            </form>
+                            <br>
+                          <% } else if(usuarioData.id == produto.FK_USUARIO) { %>
+                            <% var contI = 0; interessados.forEach(interessado => {
+                              if(interessado.FK_PRODUTO == produto.ID_PRODUTO) {
+                                  contI = contI + 1;
+                              }
+                            }) %>
+                            <p class="d-inline me-3 h6">Interesses no Produto: <span class="h4"><%= contI %></span></p>
+                              <div class="row justify-content-end mt-4 mb-2">
+                                  <div class="col">
+                                      <a href="#" class="float-end text-dark me-3" data-bs-toggle="modal" data-bs-target="#interesse_produto<%= produto.ID_PRODUTO %>">
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                              <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                                              <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                                          </svg>
+                                          Visualizar Interessados
+                                      </a> 
+                                  </div>
+                              </div>
+                          <% } else { %>
+                            <button class="btn btn-success" href="#" disabled>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16">
+                                <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z"/>
+                                <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z"/>
+                              </svg>
+                              Notificação enviada ao vendedor
+                            </button>
+                          <% } %>
+                        <% } else { %>
+                          <% if(typeof result_notif === 'undefined') { %>
+                            <form action="/produto/notificar" method="POST">
+                              <input type="hidden" name="produto" value="<%= produto.TITULO_PRODUTO %>">
+                              <input type="hidden" name="produtoId" value="<%= produto.ID_PRODUTO %>">
+                              <input type="hidden" name="usuarioId" value="<%= produto.FK_USUARIO %>">
+                              <input type="hidden" name="slug_produto" value="<%= produto.SLUG_PRODUTO %>">
+                              <button class="btn btn-success">Notificar interesse ao vendedor</button>
+                            </form>
+                            <br>
+                          <% } else { %>
+                            <button class="btn btn-success" href="#" disabled>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16">
+                                <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z"/>
+                                <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z"/>
+                              </svg>
+                              Notificação enviada ao vendedor
+                            </button>
+                          <% } %>
+                        <% } %>
+        
+                        <% if(typeof usuarioData !== 'undefined') { %>
+
+                          <!-- Modal INTERESSADOS -->
+                        <div class="modal fade" id="interesse_produto<%= produto.ID_PRODUTO %>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                              <div class="modal-content">
+                                  <div class="modal-header">
+                                      <h5 class="modal-title" id="staticBackdropLabel">Interessados</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body text-left">
+                                      <div class="row">
+                                          <div class="col">
+                                              <div class="list-group">
+                                                  <% if(interessados.length === 0) { %>
+                                                      <p class="m-2">Ainda não há pessoas interessadas nesse produto</p>
+                                                  <% } else { %>
+                                                      <% interessados.forEach(interessado => { %>
+                                                          <% if(interessado.FK_PRODUTO == produto.ID_PRODUTO) { %>
+                                                              <button type="button" class="list-group-item list-group-item-action text-left float-left pr-auto" aria-current="true" style="text-align:left">
+                                                                  <%= interessado.TB_USUARIO.NICK_USUARIO %>
+                                                              </button>
+                                                              <div class="row m-3 text-left">
+                                                                  <ul class="text-left">
+                                                                      <% contatos.forEach(contato => { %>
+                                                                          <% if(interessado.FK_USER_INTERESSE == contato.FK_USUARIO) { %>
+                                                                              <li class="text-dark mb-2 text-left"><span><%= contato.TB_TIPOS_CONTATO.NOME_TIPO_CONTATO %>: </span><%= contato.CONTATO %> <%= interessado.TB_FK_USER_INTERESSE %></li>
+                                                                          <% } %>
+                                                                      <% }) %>
+                                                                  </ul>
+                                                              </div>
+                                                          <% } %>
+                                                      <% }) %>
+                                                  <% } %>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+
+                          <% if(usuarioData.id == produto.FK_USUARIO) { %>
+
+                          <a href="" class="btn btn-dark mt-3" data-bs-toggle="modal" data-bs-target="#exampleModal">Editar Produto</a>
+
+                          <!-- Modal -->
+                          <div class="modal fade" id="exampleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="staticBackdropLabel">Edição de Produto</h5>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form action="/produto/editar" method="post">
+                                  <div class="modal-body">
+                                      <div class="row">
+                                        <div class="col">
+                                            <label for="titulo-produto" class="float-start">Título</label>
+                                            <input type="text" name="titulo_produto" id="titulo-produto" class="form-control" placeholder="Digite o título do produto" value="<%= produto.TITULO_PRODUTO %>">
+                                        </div>
+                                        <div class="col">
+                                            <label for="preco" class="float-start">Preço</label>
+                                            <input type="number" name="preco" id="preco" class="form-control" placeholder="R$ 200,00" value="<%= produto.VALOR_PRODUTO %>">
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col">
+                                            <label for="categoria" class="float-start">Categoria</label>
+                                            <select name="categoria" id="categoria" class="form-control" aria-label="Default select example" title="Selecione uma categoria">
+                                                <% categorias.forEach(categoria => { %>
+                                                    <% if(categoria.ID_CATEGORIA == produto.FK_CATEGORIA) { %>
+                                                      <option value="<%= categoria.ID_CATEGORIA %>" selected="selected"><%= categoria.NOME_CATEGORIA %></option>
+                                                    <% } else { %>
+                                                    <option value="<%= categoria.ID_CATEGORIA %>"><%= categoria.NOME_CATEGORIA %></option>
+                                                    <% } %>
+                                                <% }) %>
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <label for="condicao" class="float-start">Condição</label>
+                                            <select name="condicao" id="condicao" class="form-control" aria-label="Default select example" title="Selecione uma condição">
+                                              <% if(produto.FK_ESTADO_PRODUTO == 1) { %>
+                                                <option value="1" selected="selected">Novo</option>
+                                                <option value="2">Usado</option>
+                                              <% } else { %>
+                                                <option value="1">Novo</option>
+                                                <option value="2" selected="selected">Usado</option>
+                                              <% } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <label for="descricao" class="float-start">Descrição</label>
+                                            <textarea name="descricao" id="descricao" cols="30" rows="8" class="form-control" placeholder="Digite a descrição do seu produto"><%= produto.DESCRICAO_PRODUTO %></textarea>
+                                        </div>
+                                    </div>
+                                    <!--<div class="row mt-3">
+                                        <div class="col-12">
+                                            <label for="">F class="float-start"otos</label>
+                                            <div class="input-group mb-3">
+                                                <input type="file" class="form-control" id="inputGroupFile01">
+                                                <label class="input-group-text" for="inputGroupFile01" class="float-start">Upload</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="input-group mb-3">
+                                                <input type="file" class="form-control" id="inputGroupFile02">
+                                                <label class="input-group-text" for="inputGroupFile02" class="float-start">Upload</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="input-group mb-3">
+                                                <input type="file" class="form-control" id="inputGroupFile03">
+                                                <label class="input-group-text" for="inputGroupFile03" class="float-start">Upload</label>
+                                            </div>
+                                        </div>
+                                    </div>-->
+
+                                    <input type="hidden" name="id_produto" value="<%= produto.ID_PRODUTO %>">
+                                    <input type="hidden" name="id_usuario" value="<%= produto.FK_USUARIO %>">
+                                    
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                    <input class="btn btn-success float-end" type="submit" name="enviar" value="Enviar">
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        <% } %>
+                      <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row back_produtos mb-5">
+                
+                <div class="col-11 m-4">
+                    <h3 class="">Contatar vendedor</h3>
+                    <hr>
+                    <% contatos.forEach(contato => {
+                      if(contato.FK_USUARIO == produto.FK_USUARIO) { %>
+                        <p class="mt-0"><span class="h5"><%= contato.TB_TIPOS_CONTATO.NOME_TIPO_CONTATO %>: </span>&nbsp;&nbsp; <%= contato.CONTATO %></p>
+                      <% }
+                    }) %>
+                </div>
+
+            </div>
+            
+          </article>
+
+     <!-- JavaScript -->
+    <script src="/js/script.js"></script>
+    <script src="/js/jquery/jquery.min.js"></script>
+
+<%- include("../partials/footer.ejs") %>

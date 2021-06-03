@@ -1,0 +1,434 @@
+<%- include("./../partials/header.ejs") %>
+    <%- include("./../partials/navbar.ejs") %>
+
+    <article class="container">
+        <div class="dados my-5">
+
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active h4" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Dados</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link h4" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Produtos</button>
+                </li>
+            </ul>
+
+            <div class="tab-content mt-4" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+
+                    
+                    <form action="/user/perfil/editar" method="post">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="">Usuário</label>
+                                        <input type="text" name="usuario" class="form-control" value="<%= usuarioData.nick %>">
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="">E-mail</label>
+                                        <input type="email" name="email" class="form-control" value="<%= usuarioData.email %>" disabled>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#alterar_senha">Alterar Senha</button>
+                                        <!--<label for="">Senha</label>
+                                        <input type="password" name="senha" class="form-control" value="<%= usuarioData.senha %>">
+                                        <button type="submit" href="#" class="btn btn-primary mt-2">Alterar senha</button>-->
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-6">
+                                        <label for="">Estado</label>
+                                        <select name="estado" id="id_regiao_estado" class="form-control" onchange="buscar_cidades_perfil()">
+                                            <% estados.forEach(estado => { %>
+                                                <% if(estado.ID_ESTADO == usuarioData.estado) { %>
+                                                    <option value="<%= estado.ID_ESTADO %>" selected="selected"><%= estado.NOME_ESTADO %></option>
+                                                <% } %>
+                                                <option value="<%= estado.ID_ESTADO %>"><%= estado.NOME_ESTADO %></option>
+                                            <% }) %>
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="">Cidade</label>
+                                        <select name="cidade" id="id_regiao_cidade" class="form-control">
+                                            <option value="<%= usuarioData.id_cidade %>"><%= usuarioData.nome_cidade %></option>
+                                        </select>
+                                    </div>
+                                </div>
+            
+                                <div class="hr w-75 ms-auto me-auto mt-4"><hr></div>
+            
+                                <div class="row mt-4">
+                                    <% contatos.forEach(contato => { 
+                                        if(contato.FK_USUARIO == usuarioData.id && contato.ORDEM_CONTATO == 1) { var ordem_contato = 1 %>
+                                            <div class="col-6">
+                                                <label for="">1º Contato</label>
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text" id="basic-addon1"><%= contato.TB_TIPOS_CONTATO.NOME_TIPO_CONTATO %></span>
+                                                    <input type="text" name="contato1" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" value="<%= contato.CONTATO %>">
+                                                </div>
+                                            </div>
+                                        <% } 
+                                        if(contato.FK_USUARIO == usuarioData.id && contato.ORDEM_CONTATO == 2) { var ordem_contato = 2 %>
+                                            <div class="col-6">
+                                                <label for="">2º Contato</label>
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text" id="basic-addon1"><%= contato.TB_TIPOS_CONTATO.NOME_TIPO_CONTATO %></span>
+                                                    <input type="text" name="contato2" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" value="<%= contato.CONTATO %>">
+                                                </div>
+                                            </div>
+                                        <% } 
+
+                                        if(contato.FK_USUARIO == usuarioData.id && contato.ORDEM_CONTATO == 3) { var ordem_contato = 3 %>
+                                            <div class="col-6">
+                                                <label for="">3º Contato</label>
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text" id="basic-addon1"><%= contato.TB_TIPOS_CONTATO.NOME_TIPO_CONTATO %></span>
+                                                    <input type="text" name="contato3" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" value="<%= contato.CONTATO %>">
+                                                </div>
+                                            </div>
+                                        <% } 
+                                        if(contato.FK_USUARIO == usuarioData.id && contato.ORDEM_CONTATO == 4) { var ordem_contato = 4 %>
+                                            <div class="col-6">
+                                                <label for="">4º Contato</label>
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text" id="basic-addon1"><%= contato.TB_TIPOS_CONTATO.NOME_TIPO_CONTATO %></span>
+                                                    <input type="text" name="contato4" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" value="<%= contato.CONTATO %>">
+                                                </div>
+                                            </div>
+                                        <% } 
+                                    }) %>
+                                </div>
+                                <button type="button" class="btn btn-outline-dark w-100 mt-4" data-bs-toggle="modal" data-bs-target="#novoContato">Adicionar Contato</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <input type="submit" class="btn btn-success mt-3 float-end" value="Salvar Alterações">
+                            </div>
+                        </div>
+                    </form>
+
+                     <!-- Modal SENHA -->
+                     <div class="modal fade" id="alterar_senha" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">Alterar Senha</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form action="/user/perfil/editar/senha" method="POST">
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="">Nova Senha</label>
+                                                <input type="password" name="senha" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                        <input class="btn btn-success float-end" type="submit" name="enviar" value="Alterar">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+
+                    
+                    <div class="produtos">
+                        <%  if(produtos.length > 0) {
+                            produtos.forEach(produto => {  var id_produto = produto.ID_PRODUTO; %>
+                                <div class="card mb-5">
+                                    <div class="card-header">
+                                        <p class="d-inline w-50 h6"><%= produto.TITULO_PRODUTO %></p>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row justify-content-between">
+                                            <div class="col-md-4 col-12 m-md-4 m-0 ps-0">
+                                                <div id="carouselExampleControls" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                                                    <div class="carousel-inner">
+                                                        <% let cont = 0; imgProduto.forEach(img => { %>               
+                                                            <% if(img.FK_PRODUTO == produto.ID_PRODUTO) { %>
+                                                                <div <% if(cont === 0){ %> class="carousel-item active" <% } else { %> class="carousel-item" <% } %> data-bs-interval="2000" >
+                                                                    <img src="/img/produtos/<%= img.KEY_IMG.replace(/'/g, '') %>" class="d-block w-100" alt="...">     
+                                                                </div>
+                                                            <% cont = cont + 1; }  %>  
+                                                        <% }) %>                                                                                                                                                
+                                                    </div>
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="col-md-7 col-12">
+                                                <p class="mt-3"><%= produto.DESCRICAO_PRODUTO %></p>
+                                                <p class="me-auto text-right ms-0 h5 mt-3">R$ <%= produto.VALOR_PRODUTO %>,00</p>
+
+                                                <div class="buttons mt-4">
+                                                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#produto<%= produto.ID_PRODUTO %>">Editar Produto</button>
+                                                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete_produto<%= produto.ID_PRODUTO %>">Deletar Produto</button>
+                                                    <% var contI = 0; interessados.forEach(interessado => {
+                                                        if(interessado.FK_PRODUTO == id_produto) {
+                                                            contI = contI + 1;
+                                                        }
+                                                    }) %>
+                                                    <p class="d-inline float-end me-3 h6">Interesses no Produto: <span class="h4" id="interesssados<%= id_produto %>"><%= contI %></span></p>
+                                                    <div class="row justify-content-end mt-5">
+                                                        <div class="col-6 ms-auto">
+                                                            <a href="/produto/visualizar/<%= produto.SLUG_PRODUTO %>" class="text-dark">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                                                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                                                                </svg>
+                                                                Visualizar Produto
+                                                            </a>                        
+                                                        </div>
+                                                        <div class="col-6 float-left">
+                                                            <a href="#" class="float-end text-dark me-3" data-bs-toggle="modal" data-bs-target="#interesse_produto<%= produto.ID_PRODUTO %>">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                                                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                                                                </svg>
+                                                                Visualizar Interessados
+                                                            </a> 
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modal INTERESSADOS -->
+                                <div class="modal fade" id="interesse_produto<%= produto.ID_PRODUTO %>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="staticBackdropLabel">Interessados</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="list-group">
+                                                            <% if(interessados.length === 0) { %>
+                                                                <p class="m-2">Ainda não há pessoas interessadas nesse produto</p>
+                                                            <% } else { %>
+                                                                <% interessados.forEach(interessado => { %>
+                                                                    <% if(interessado.FK_PRODUTO == produto.ID_PRODUTO) { %>
+                                                                        <button type="button" class="list-group-item list-group-item-action" aria-current="true">
+                                                                            <%= interessado.TB_USUARIO.NICK_USUARIO %>
+                                                                        </button>
+                                                                        <div class="row m-3">
+                                                                            <ul>
+                                                                                <% contatos.forEach(contato => { %>
+                                                                                    <% if(interessado.FK_USER_INTERESSE == contato.FK_USUARIO) { %>
+                                                                                        <li class="text-dark mb-2"><span><%= contato.TB_TIPOS_CONTATO.NOME_TIPO_CONTATO %>: </span><%= contato.CONTATO %> <%= interessado.TB_FK_USER_INTERESSE %></li>
+                                                                                    <% } %>
+                                                                                <% }) %>
+                                                                            </ul>
+                                                                        </div>
+                                                                    <% } %>
+                                                                <% }) %>
+                                                            <% } %>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modal DELETAR -->
+                                <div class="modal fade" id="delete_produto<%= produto.ID_PRODUTO %>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="staticBackdropLabel">Deletar Produto</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form action="/produto/deletar" method="post">
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <p>Deseja realmente deletar esse produto?</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                                    <input class="btn btn-success float-end" type="submit" name="enviar" value="Deletar">
+                                                </div>
+                                                <input type="hidden" value="<%= produto.ID_PRODUTO %>" name="id_produto">
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                    
+
+                                <!-- Modal EDIÇÃO -->
+                            <div class="modal fade" id="produto<%= produto.ID_PRODUTO %>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">Edição de Produto</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form action="/produto/editar" method="post" enctype="multipart/form-data">
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label for="titulo-produto" class="float-start">Título</label>
+                                                    <input type="text" name="titulo_produto" id="titulo-produto" class="form-control" placeholder="Digite o título do produto" value="<%= produto.TITULO_PRODUTO %>">
+                                                </div>
+                                                <div class="col">
+                                                    <label for="preco" class="float-start">Preço</label>
+                                                    <input type="number" name="preco" id="preco" class="form-control" placeholder="R$ 200,00" value="<%= produto.VALOR_PRODUTO %>">
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col">
+                                                    <label for="categoria" class="float-start">Categoria</label>
+                                                    <select name="categoria" id="categoria" class="form-control" aria-label="Default select example" title="Selecione uma categoria">
+                                                        <% categorias.forEach(categoria => { %>
+                                                            <% if(categoria.ID_CATEGORIA == produto.FK_CATEGORIA) { %>
+                                                            <option value="<%= categoria.ID_CATEGORIA %>" selected="selected"><%= categoria.NOME_CATEGORIA %></option>
+                                                            <% } else { %>
+                                                            <option value="<%= categoria.ID_CATEGORIA %>"><%= categoria.NOME_CATEGORIA %></option>
+                                                            <% } %>
+                                                        <% }) %>
+                                                    </select>
+                                                </div>
+                                                <div class="col">
+                                                    <label for="condicao" class="float-start">Condição</label>
+                                                    <select name="condicao" id="condicao" class="form-control" aria-label="Default select example" title="Selecione uma condição">
+                                                    <% if(produto.FK_ESTADO_PRODUTO == 1) { %>
+                                                        <option value="1" selected="selected">Novo</option>
+                                                        <option value="2">Usado</option>
+                                                    <% } else { %>
+                                                        <option value="1">Novo</option>
+                                                        <option value="2" selected="selected">Usado</option>
+                                                    <% } %>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col-12">
+                                                    <label for="descricao" class="float-start">Descrição</label>
+                                                    <textarea name="descricao" id="descricao" cols="30" rows="8" class="form-control" placeholder="Digite a descrição do seu produto"><%= produto.DESCRICAO_PRODUTO %></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col-12">
+                                                    <label for="inputGroupFile01">Imagens do Produto</label>
+                                                    <div class="input-group mb-3">
+                                                        <input type="file" name="file" class="form-control" id="inputGroupFile01" multiple>
+                                                        <label class="input-group-text" for="inputGroupFile01" class="float-start">Upload</label>
+                                                    </div>
+                                                    <p>Máximo de Uploads: 4</p>
+                                                    <p><h5>Atenção! </h5>Ao editar um produto com novas imagens, as antigas serão apagadas e substituídas pelas novas que foram anexadas.</p>
+                                                </div>
+
+                                                <!--<div class="col-12">
+                                                    <div class="input-group mb-3">
+                                                        <input type="file" class="form-control" id="inputGroupFile02">
+                                                        <label class="input-group-text" for="inputGroupFile02" class="float-start">Upload</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="input-group mb-3">
+                                                        <input type="file" class="form-control" id="inputGroupFile03">
+                                                        <label class="input-group-text" for="inputGroupFile03" class="float-start">Upload</label>
+                                                    </div>
+                                                </div>-->
+                                            </div>
+
+                                            <input type="hidden" name="id_produto" value="<%= produto.ID_PRODUTO %>">
+                                            <input type="hidden" name="id_usuario" value="<%= produto.FK_USUARIO %>">
+                                            
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                            <input class="btn btn-success float-end" type="submit" name="enviar" value="Enviar">
+                                        </div>
+                                    </form>
+                                </div>
+                                </div>
+                            </div>
+
+                            <% })
+
+                        } else { %>
+
+                            <div class="error d-flex">
+                                <div class="site">
+                                    <div class="sketch">
+                                        <div class="bee-sketch red"></div>
+                                        <div class="bee-sketch blue"></div>
+                                    </div>
+                                
+                                <h1 class="errorH1 text-dark">Ops!
+                                    <small class="text-dark">Não há produtos</small></h1>
+                                </div>
+                            </div>
+
+                        <% } %>
+                        
+
+                    </div>
+                    
+
+                </div>
+            </div>
+
+            <!-- Modal CONTATO -->
+            <div class="modal fade" id="novoContato" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Contato</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="/user/perfil/contato" method="post">
+                            <div class="modal-body text-left">
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
+                                        <label for="">Tipo de Contato</label>
+                                        <select class="form-control" name="tipoContato">
+                                            <option value="">Selecione uma opção</option>
+                                
+                                            <% tiposContatos.forEach(tipos => { %>
+                                                <option value="<%= tipos.ID_TIPO %>">
+                                                    <%= tipos.NOME_TIPO_CONTATO %>
+                                                </option>
+                                            <% }); %>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <div class="col">
+                                            <label for="">Contato</label>
+                                            <input type="text" id="contato" class="form-control" name="contato">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                <input type="submit" value="Salvar" class="btn btn-primary">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </article>
+
+<%- include("./../partials/footer.ejs") %>
