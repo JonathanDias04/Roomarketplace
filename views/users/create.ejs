@@ -2,8 +2,10 @@
     <%- include("./../partials/navbar.ejs") %>
 
     <div class="container mt-5">
-        <div class="card">
-            <div class="card-header">Cadastro de Usuário</div>
+        <div class="card mb-5">
+            <div class="card-header text-center">
+                <img class="m-2" src="/img/logoSimples.png" alt="">
+            </div>
             <div class="card-body">
                 <form action="/users/create" method="POST">
                     <div class="row">
@@ -95,7 +97,7 @@
                     <label for="senha">Senha</label>
                     <input type="password" id="senha" class="form-control mb-3" name="senha" placeholder="Digite sua senha...">
 
-                    <input type="submit" class="btn btn-block btn-primary" value="Cadastrar">
+                    <input type="submit" class="btn w-100 btn-primary" value="Cadastrar">
                 </form>
             </div>
         </div>

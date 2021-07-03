@@ -1,0 +1,79 @@
+<!-- Modal Novo Produto -->
+<div class="modal fade" id="novoProduto" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="10" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Anunciar Produto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/produtos/anunciar_produto" method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <h5 class="mt-2 mb-3">Dados Gerais</h5>
+                        <div class="row">
+                            <div class="col">
+                                <label for="titulo-produto">Título</label>
+                                <input type="text" name="titulo_produto" id="titulo-produto" class="form-control" placeholder="Digite o título do produto" required="required">
+                            </div>
+                            <div class="col">
+                                <label for="preco">Preço</label>
+                                <input type="number" name="preco" id="preco" class="form-control" placeholder="R$ 200,00" required="required">
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <label for="categoria">Categoria</label>
+                                <select name="categoria" id="categoria" class="form-control" aria-label="Default select example" title="Selecione uma categoria" required="required">
+                                    <option value="" selected="selected">Selecione uma categoria</option>
+                                    <% categorias.forEach(categoria => { %>
+                                        <option value="<%= categoria.ID_CATEGORIA %>"><%= categoria.NOME_CATEGORIA %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label for="condicao">Condição</label>
+                                <select name="condicao" id="condicao" class="form-control" aria-label="Default select example" title="Selecione uma condição" required="required">
+                                    <option value="" selected="selected">Selecione uma condição</option>
+                                    <option value="1">Novo</option>
+                                    <option value="2">Usado</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <label for="descricao">Descrição</label>
+                                <textarea name="descricao" id="descricao" cols="30" rows="8" class="form-control" placeholder="Digite a descrição do seu produto" required="required"></textarea>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <label for="">Fotos</label>
+                                <div class="input-group mb-3">
+                                    <input type="file" name="file" class="form-control" id="inputGroupFile01" multiple required="required">
+                                    <label class="input-group-text" for="inputGroupFile01">Upload</label>
+                                </div>
+                            </div>
+                        </div>
+                        <h5 class="mt-3 mb-3">Localização</h5>
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <label for="id_regiao_estado">Estado</label>
+                                <select name="estado" id="id_regiao_estado" class="form-control" aria-label="Default select example" title="Selecione um estado" onchange="buscar_cidades()" required="required">
+                                    <option value="">Selecione um estado</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="id_regiao_cidade">Cidade</label>
+                                <select name="cidade" id="id_regiao_cidade" class="form-control" aria-label="Default select example" title="Selecione uma cidade" required="required">
+                                    <option value="">Selecione uma cidade</option>
+                                </select>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <input class="btn btn-success float-end" type="submit" name="enviar" value="Enviar">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

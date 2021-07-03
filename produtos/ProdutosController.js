@@ -21,6 +21,9 @@ const ImgProduto = require("./DBimgprodutos");
 const multer = require("multer");
 const multerConfig = require("../config/multer");
 
+router.use(express.urlencoded({ extended: true }))
+router.use(express.json()) 
+
 router.post("/produtos/anunciar_produto", multer(multerConfig).array("file", 4),  (req, res) => {
     var titulo = req.body.titulo_produto;
     var descricao = req.body.descricao;
@@ -29,16 +32,21 @@ router.post("/produtos/anunciar_produto", multer(multerConfig).array("file", 4),
     var categoria = req.body.categoria;
     var usuario = req.session.usuarioData.id;
     var files = req.files;
-    console.log(req.files);
+    var cidade = req.body.cidade;
+    var estado = req.body.estado;
+    console.log(estado);
     Produto.create({
         TITULO_PRODUTO: titulo,
         DESCRICAO_PRODUTO: descricao,
         VALOR_PRODUTO: valor,
         DATA_ATUALIZACAO: dateFormat(new Date(), "yyyy-mm-dd h:MM:ss"),
         SLUG_PRODUTO: slugify(titulo),
-        FK_ESTADO_PRODUTO: condicao,
+        FK_CONDICAO_PRODUTO: condicao,
         FK_CATEGORIA: categoria,
-        FK_USUARIO: usuario
+        FK_USUARIO: usuario,
+        FK_CIDADE_PRODUTO: cidade,
+        FK_ESTADO_PRODUTO: estado,
+        CONDICAO_ANUNCIO: true
     }).then(() => {
         console.log("criou");
         Produto.findOne({where: {TITULO_PRODUTO: titulo, DESCRICAO_PRODUTO: descricao}}).then(produto => {
@@ -72,24 +80,34 @@ router.get("/produtos/pesquisar", (req, res) => {
                 TITULO_PRODUTO: {
                     [Op.like]: '%' + produto + '%'
                 }
-            }
+            },
+            include: [
+                {model: EstadoProduto, atributes: ['ESTADO_PRODUTO']},
+                {model: Estado, required: false},
+                {model: Cidade, required: false}
+            ]
         }).then(produtos => {
-            console.log(produtos);
-            if(typeof req.session.usuarioData !== 'undefined') {
-                User.findOne({ where: {ID_USUARIO: req.session.usuarioData.id} }).then(usuario => {
-                    Notificacao.findAll({where: { FK_USER_PRODUTO: req.session.usuarioData.id }, order: [
-                        ['ID_NOTIFICACO', 'DESC']
-                    ],
-                    include: [
-                        {model: User, required: false},
-                        {model: Produto, required: false}
-                    ],}).then(notificacao => {
-                        res.render("produtos/produtos", {produtos: produtos, categoria: categoria, categorias:categorias, pesquisa: pesquisa, usuarioData: req.session.usuarioData, usuario: usuario, notificacoes: notificacao})
-                    })
+            Cidade.findAll().then(cidades => {
+                ImgProduto.findAll().then(img => {
+                    if(typeof req.session.usuarioData !== 'undefined') {
+                        User.findOne({ where: {ID_USUARIO: req.session.usuarioData.id} }).then(usuario => {
+                            Notificacao.findAll({where: { FK_USER_PRODUTO: req.session.usuarioData.id }, order: [
+                                ['ID_NOTIFICACO', 'DESC']
+                            ],
+                            include: [
+                                {model: User, required: false},
+                                {model: Produto, required: false}
+                            ],}).then(notificacao => {
+                                res.render("produtos/produtos", {imgProduto: img, cidades: cidades, produtos: produtos, categoria: categoria, categorias:categorias, pesquisa: pesquisa, usuarioData: req.session.usuarioData, usuario: usuario, notificacoes: notificacao})
+                            })
+                        })
+                    } else {
+                        res.render("produtos/produtos", {imgProduto: img, cidades: cidades, produtos: produtos, categoria: categoria, pesquisa: pesquisa, categorias:categorias})
+                    }
                 })
-            } else {
-                res.render("produtos/produtos", {produtos: produtos, categoria: categoria, pesquisa: pesquisa, categorias:categorias})
-            }
+            }).catch(error => {
+                console.log(error)
+            });
         }).catch(error => {
             console.log(error)
         });
@@ -177,14 +195,19 @@ router.get("/produto/visualizar/:slug_produto", (req, res) => {
     Categoria.findAll().then(categoria => {
         Produto.findOne({
             where: {SLUG_PRODUTO: slug_produto},
-            include: [{model: EstadoProduto, atributes: ['ESTADO_PRODUTO']}]
+            include: [
+                {model: EstadoProduto, atributes: ['ESTADO_PRODUTO']},
+                {model: Estado, required: false},
+                {model: Cidade, required: false}
+            ]
         }).then(produto => {
             User.findOne({
                 atributes: ['FK_USUARIO'],
                 where: {
                     ID_USUARIO: produto.FK_USUARIO
                 }, 
-                include: [{model: Cidade, atributes: ['NOME_CIDADE']}]
+                include: [{model: Cidade, atributes: ['NOME_CIDADE', 'NICK_USUARIO']},
+            ]
             }).then(user_produto => {
                 Cidade.findOne({
                     atributes: ['NOME_CIDADE'],
@@ -258,7 +281,7 @@ router.post("/produto/editar", multer(multerConfig).array("file", 4), (req, res)
         DATA_ATUALIZACAO: data,
         SLUG_PRODUTO: slugify(titulo),
         FK_CATEGORIA: categoria,
-        FK_ESTADO_PRODUTO: condicao,
+        FK_CONDICAO_PRODUTO: condicao,
         FK_USUARIO: id_usuario,
     }, {
         where: {
@@ -330,19 +353,50 @@ router.post("/produto/deletar", adminAuth, (req, res) => {
                             ID_NOTIFICACO: interesse.ID_NOTIFICACO
                         }}).then(() => {
                             console.log("interesse apagado")
-                            Produto.destroy({
-                                where: {
-                                    ID_PRODUTO: id_produto
-                                }
-                            }).then(() => {
-                                res.redirect("/user/perfil");
-                            })
                         })
+                    })
+                    Produto.destroy({
+                        where: {
+                            ID_PRODUTO: id_produto
+                        }
+                    }).then(() => {
+                        res.redirect("/user/perfil");
                     })
                 })
             })
         })
         
+    })
+})
+
+router.post("/filtra/cidade", (req, res) => {
+    var cidade = req.body.cidade;
+    Produto.findAll(
+        {where:{FK_CIDADE_PRODUTO: cidade},
+        include: [
+            {model: Cidade, required: false},
+            {model: Estado, required: false}
+        ]
+    }).then(produtos => {
+        ImgProduto.findAll().then(imgs => {
+            res.json({produtos: produtos, imgs: imgs})
+        })
+    })
+})
+
+router.post("/produto/encerrarReabrirAnuncio", adminAuth, (req, res) => {
+    var condicao = req.body.condicaoAnuncio;
+    condicao = parseInt(condicao);
+    var produto = req.body.id_produto;
+    console.log(req.body);
+    Produto.update({
+        CONDICAO_ANUNCIO: condicao
+    }, {
+        where: {
+            ID_PRODUTO: produto
+        }
+    }).then(() => {
+        res.redirect("/user/perfil");
     })
 })
 

@@ -2,21 +2,12 @@
     <%- include("../partials/navbar.ejs") %>
 
 
-    <div class="d-flex" id="wrapper">
+    <div class="d-flex" id="">
 
         <!-- Sidebar -->
-        <div class="bg-dark border-right" id="sidebar-wrapper">
-          <div class="sidebar-heading text-light">Filtros</div>
-          <!--<div class="list-group list-group-flush">
-            <a href="#" class="list-group-item list-group-item-action bg-light">Dashboard</a>
-            <a href="#" class="list-group-item list-group-item-action bg-light">Shortcuts</a>
-            <a href="#" class="list-group-item list-group-item-action bg-light">Overview</a>
-            <a href="#" class="list-group-item list-group-item-action bg-light">Events</a>
-            <a href="#" class="list-group-item list-group-item-action bg-light">Profile</a>
-            <a href="#" class="list-group-item list-group-item-action bg-light">Status</a>  
-          </div>-->
+        <div class="bg-dark border-right" id="filtros">
+          <h5 class="ms-4 my-3 text-light">Filtros</h5>
 
-        <form action="/produtos/filtrar" method="GET">
             <div class="row mt-3 ps-4">
                 <label for="precos" class="text-light mb-2">Preços</label>
                 <div class="input-group mb-3" style="width: 75%;">
@@ -30,28 +21,21 @@
                 </div>
 
                 <label for="" class="text-light mb-2">Ordenar</label>
-                <select class="form-select ms-2 mb-5" name="ordem" aria-label="Default select example" style="width: 75%;">
+                <select class="form-select mb-5" name="ordem" aria-label="Default select example" style="width: 68%; margin-left: 10px;">
                     <option selected>Selecione</option>
                     <option value="1">Menor preço</option>
                     <option value="2">Maior preço</option>
                 </select>
 
-                <label for="" class="text-light mb-2 ms-0">Região</label>
-                <select class="js-example-basic-single" name="state">
-                    <option value="AL">Caraguatatuba</option>
-                      ...
-                    <option value="WY">São Sebastião</option>
-                  </select>
+                <label for="cidade" class="text-light mb-2">Região</label>
+                <select class="js-example-basic-single form-select w-75" name="cidade" id="cidade" onchange="filtrarProdutos()">
+                    <option value="">Selecione</option>
+                    <% cidades.forEach(cidade => { %>
+                        <option value="<%= cidade.ID_CIDADE %>"><%= cidade.NOME_CIDADE %></option>  
+                    <% }) %>
+                </select>
             </div>
             <input type="hidden" name="categoria" value="<%= categoria %>">
-            <div class="row" id="div_filtrar">
-                <div class="col-12">
-                    <button class="btn btn-success" id="btn_filtrar">
-                        Filtrar
-                    </button>
-                </div>
-            </div>
-        </form>
 
         </div>
         <!-- /#sidebar-wrapper -->
@@ -67,67 +51,74 @@
                 Filtros
 
             </button>
-    
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
 
           </nav>
     
-          <article class="container-fluid">
-
-            <div class="row mt-5 px-5">
-                <div class="row justify-content-center">
+          <article class="container-fluid" id="content">
+            
+                <div class="row justify-content-center mt-5">
                     <div class="col-11">
                         <% if(typeof pesquisa !== 'undefined') { %>
                             <h3>Produtos encontrados</h3>
                         <% } else { %>
-                            <h3><%= categoria %></h3>
+                            <h3><%= categoria.NOME_CATEGORIA %></h3>
                         <% } %>
                         <hr>
                     </div>
                 </div>
-                
-                <% if(produtos.length > 0) {
-                    produtos.forEach(produto => { %>
-                        <div class="col-lg-3">
-                            <a href="/produto/visualizar/<%= produto.SLUG_PRODUTO %>">
-                                <div class="card text-white bg-dark mb-3 ms-auto mt-3 me-auto" style="max-width: 18rem;">
-                                    <div id="carouselExampleControls" class="carousel slide carousel-fade" data-bs-ride="carousel">
-                                        <div class="carousel-inner">
-                                            <% let cont = 0; imgProduto.forEach(img => { %>               
-                                                <% if(img.FK_PRODUTO == produto.ID_PRODUTO) { %>
-                                                    <div <% if(cont === 0){ %> class="carousel-item active" <% } else { %> class="carousel-item" <% } %> data-bs-interval="2000" >
-                                                        <img src="/img/produtos/<%= img.KEY_IMG.replace(/'/g, '') %>" class="d-block w-100" alt="...">     
+                <div class="row mt-4 mb-5" id="semProdutos" style="display: none;">
+                    <div><%- include("../partials/semProdutos.ejs") %></div>
+                </div>
+                <div class="row mt-1 px-5" id="listaProdutos">
+
+                    
+
+                    <% if(produtos.length > 0) {
+                        var contLength = produtos.length;
+                        produtos.forEach(produto => { 
+                            if(produto.CONDICAO_ANUNCIO == 1) { %>
+
+                                <div class="col-lg-3">
+                                    <a href="/produto/visualizar/<%= produto.SLUG_PRODUTO %>">
+                                        <div class="card text-white bg-dark mb-3 ms-auto mt-3 me-auto cardProdutos" style="max-width: 18rem; height: 420px"">
+                                            <% for(var i = 0; i < imgProduto.length; i++) { %>               
+                                                <% if(imgProduto[i].FK_PRODUTO == produto.ID_PRODUTO) { %>
+                                                    <div class="divImgCard">
+                                                        <img src="/img/produtos/<%= imgProduto[i].KEY_IMG.replace(/'/g, '') %>" class="img-fluid mx-auto" alt="..." style="height:250px; width: 100%;">     
                                                     </div>
-                                                <% cont = cont + 1; }  %>  
-                                            <% }) %>                                                                                                                                                
+                                                    <% break; %>
+                                                <% } %>  
+                                            <% } %>                                                                                                                                                
+                                            <div class="card-body">
+                                                <h6 class="card-title texto_overflow"><%= produto.TITULO_PRODUTO %></h6>
+                                                <h6 class="card-title my-3">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                                                        <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                                                    </svg>
+                                                    <%= produto.TB_CIDADE.NOME_CIDADE %> - <%= produto.TB_ESTADO.UF_ESTADO %>
+                                                </h6>
+                                                <h5 class="card-text text-success">R$ <%= produto.VALOR_PRODUTO %>,00</h5>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <h6 class="card-title texto_overflow"><%= produto.TITULO_PRODUTO %></h6>
-                                        <h5 class="card-text">R$ <%= produto.VALOR_PRODUTO %>,00</h5>
-                                    </div>
+                                    </a>
                                 </div>
-                            </a>
-                        </div>
-                    <% }) %>
-                <% } else { %>
+                            <% } else {
+                                contLength = contLength - 1;
+                            }
 
-                    <div class="error d-flex">
-                        <div class="site">
-                            <div class="sketch">
-                                <div class="bee-sketch red"></div>
-                                <div class="bee-sketch blue"></div>
-                            </div>
+                            if(contLength == 0) { %>
+
+                                <div><%- include("../partials/semProdutos.ejs") %></div>
+        
+                            <% }
+                        })
                         
-                        <h1 class="errorH1 text-dark">Ops!
-                            <small class="text-dark">Não há produtos</small></h1>
-                        </div>
-                    </div>
+                    } else { %>
 
-                <% } %>
-            </div>
+                        <div><%- include("../partials/semProdutos.ejs") %></div>
+
+                    <% } %>
+                </div>
             
           </article>
         </div>

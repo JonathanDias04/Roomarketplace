@@ -12,6 +12,7 @@ const Categoria = require("../categorias/DBcategorias");
 const TipoContatos = require("./contato/DBTiposContato");
 const Contato = require("./contato/DBContatosUser");
 const ImgProduto = require("../produtos/DBimgprodutos");
+const Swal = require('sweetalert2');
 
 
 router.get("/admin/users/create", (req, res) => {
@@ -71,12 +72,16 @@ router.post("/users/create", (req, res) => {
 
             }).then(() => {
                 User.findOne({where: {EMAIL_USUARIO: email}}).then(user => {
+                    var ordem_contato = 1;
                     Contato.create({
+                        ORDEM_CONTATO: ordem_contato,
                         CONTATO: contato1,
                         FK_USUARIO: user.ID_USUARIO,
                         FK_TIPO_CONTATO: tipoContato1
                     }).then(() => {
+                        ordem_contato += 1;
                         Contato.create({
+                            ORDEM_CONTATO: ordem_contato,
                             CONTATO: contato2,
                             FK_USUARIO: user.ID_USUARIO,
                             FK_TIPO_CONTATO: tipoContato2
@@ -105,9 +110,10 @@ router.post("/users/create", (req, res) => {
 
 router.get("/auth/login", (req, res) => {
     Categoria.findAll().then(categorias => {
-        res.render("users/login", {categorias: categorias});
-    })
+        res.render("users/login", {categorias: categorias, loginFail: undefined});
+    });
 });
+
 router.post("/user/authenticate", (req, res) => {
     var email = req.body.email;
     var password = req.body.password;
@@ -133,21 +139,21 @@ router.post("/user/authenticate", (req, res) => {
                         estado: id_estado
                     }
     
-                    console.log(req.session.usuarioData)
-                    res.redirect("/");
+                    console.log(req.session.usuarioData);
+                    res.json("logado");
 
                 }).catch(err => {
                     console.log(err);
                 })
             } else {
-                res.redirect("/auth/login")
+                res.json("senha");
             }
 
         } else {
-            res.redirect("/auth/login")
+            res.json("email");
         }
     }).catch(error => {
-        console.log(error)
+        console.log(error);
     })
 });
 
@@ -277,6 +283,21 @@ router.post('/user/perfil/contato', adminAuth, (req, res) => {
         }).then(() => {
             res.redirect("/user/perfil")
         })
+    })
+})
+
+router.get("/user/verificaLogin", (req, res) => {
+    if(req.session.usuarioData != undefined) {
+        res.json("logado");
+    } else {
+        res.json("deslogado");
+    }
+})
+
+router.get("/user/buscaEstados", (req, res) => {
+    Estado.findAll().then(estados => {
+        console.log(estados)
+        res.json(estados);
     })
 })
 

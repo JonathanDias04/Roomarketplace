@@ -71,10 +71,14 @@ app.get("/", (req, res) => {
     Categoria.findAll().then(categoria => {
             req.session.convidado = true;
             if(req.session.usuarioData !== undefined) {
-                Notificacao.findAll({where: { FK_USER_PRODUTO: req.session.usuarioData.id }, include: [
-                    {model: User, required: false},
-                    {model: Produto, required: false}
-                ],}).then(notificacao => {
+                Notificacao.findAll({
+                    order: [['ID_NOTIFICACO', 'DESC']],
+                    where: { FK_USER_PRODUTO: req.session.usuarioData.id }, 
+                    include: [
+                        {model: User, required: false},
+                        {model: Produto, required: false}
+                    ]
+                    ,}).then(notificacao => {
                     console.log(notificacao)
                     User.findOne({ where: {
                         ID_USUARIO: req.session.usuarioData.id
@@ -106,23 +110,33 @@ app.get("/:slug_categoria/produtos", (req, res) => {
                 },
                 order: [
                     ['VALOR_PRODUTO', 'DESC']
+                ],
+                include: [
+                    {model: Cidade, required: false}, 
+                    {model: Estado, required: false}
                 ]
             }).then(produto => {
-                console.log(categoria['NOME_CATEGORIA']);
-                Imgprodutos.findAll().then(img => {
-                    if(req.session.usuarioData !== undefined) {
-                        User.findOne({ where: {ID_USUARIO: req.session.usuarioData.id} }).then(usuario => {
-                            Notificacao.findAll({where: { FK_USER_PRODUTO: req.session.usuarioData.id }, include: [
-                                {model: User, required: false},
-                                {model: Produto, required: false}
-                            ],}).then(notificacao => {
-                                console.log(notificacao);
-                                res.render("produtos/produtos", { produtos: produto, imgProduto: img, categoria: categoria['NOME_CATEGORIA'], usuarioData: req.session.usuarioData, usuario: usuario, notificacoes: notificacao, categorias: categorias})
+                console.log(produto);
+                Cidade.findAll().then(cidades => {
+                    Imgprodutos.findAll().then(img => {
+                        if(req.session.usuarioData !== undefined) {
+                            User.findOne({ where: {ID_USUARIO: req.session.usuarioData.id} }).then(usuario => {
+                                Notificacao.findAll({
+                                    order: [['ID_NOTIFICACO', 'DESC']],
+                                    where: { FK_USER_PRODUTO: req.session.usuarioData.id }, include: [
+                                    {model: User, required: false},
+                                    {model: Produto, required: false}
+                                ],}).then(notificacao => {
+                                    console.log(notificacao);
+                                    res.render("produtos/produtos", {cidades: cidades, produtos: produto, imgProduto: img, categoria: categoria, usuarioData: req.session.usuarioData, usuario: usuario, notificacoes: notificacao, categorias: categorias})
+                                })
                             })
-                        })
-                    } else {
-                        res.render("produtos/produtos", { produtos: produto, imgProduto: img, categoria: categoria['NOME_CATEGORIA'], categorias: categorias})
-                    }
+                        } else {
+                            res.render("produtos/produtos", { produtos: produto, cidades: cidades, imgProduto: img, categoria: categoria, categorias: categorias})
+                        }
+                    }).catch(error => {
+                        console.log(error);
+                    })
                 }).catch(error => {
                     console.log(error);
                 })

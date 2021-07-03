@@ -9,40 +9,19 @@
         <div class="row d-flex justify-content-center" id="categorias">
 
             <% categorias.forEach(categoria => { %>
-                    <div class="col-lg-3 col-12 col-sm-6 mb-5">
-                        <a href="/<%= categoria.SLUG_CATEGORIA %>/produtos" class="text-center p-0">
-                            <div class="card card_custom text-white bg-dark mb-3 text-wrap ms-auto me-auto" style="max-width: 18rem; height: 350px">
-                                <img src="/img/categorias/<%= categoria.NOME_IMAGEM %>.jpg" class="card-img-top img_card" alt="...">
-                                <div class="card-body">
-                                    <h5 class="card-title"><%= categoria.NOME_CATEGORIA %></h5>
-                                    <p class="card-text texto_overflow"><%= categoria.DESCRICAO_CATEGORIA %></p>
-                                </div>
+                <div class="col-lg-3 col-12 col-sm-6 mb-5">
+                    <a href="/<%= categoria.SLUG_CATEGORIA %>/produtos" class="text-center p-0">
+                        <div class="card card_custom text-white bg-dark mb-3 text-wrap ms-auto me-auto" style="max-width: 18rem; height: 350px">
+                            <img src="/img/categorias/<%= categoria.NOME_IMAGEM %>.jpg" class="card-img-top img_card" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title"><%= categoria.NOME_CATEGORIA %></h5>
+                                <p class="card-text texto_overflow"><%= categoria.DESCRICAO_CATEGORIA %></p>
                             </div>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
+                </div>
             <% }) %>
 
-            <!--<div class="col-lg-4">
-                <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
-                    <img src="/img/categorias/brinquedos.jpg" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Brinquedos e jogos</h5>
-                        <p class="card-text texto_overflow">Brinquedos infantis e qualquer tipo de jogo.</p>
-                        <a href="#" class="btn btn-success">Explorar</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4">
-                <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
-                    <img src="/img/categorias/brinquedos.jpg" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Brinquedos e jogos</h5>
-                        <p class="card-text texto_overflow">Brinquedos infantis e qualquer tipo de jogo.</p>
-                        <a href="#" class="btn btn-success">Explorar</a>
-                    </div>
-                </div>
-            </div>-->
         </div>
 
     </article>

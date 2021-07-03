@@ -4,7 +4,7 @@
     <article class="container">
         <div class="dados my-5">
 
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <ul class="nav nav-tabs" id="myTab" role="tablist" style="margin-top:0">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active h4" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Dados</button>
                 </li>
@@ -13,7 +13,7 @@
                 </li>
             </ul>
 
-            <div class="tab-content mt-4" id="myTabContent">
+            <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
 
                     
@@ -197,8 +197,61 @@
                                                             </a> 
                                                         </div>
                                                     </div>
+                                                    <div class="row mt-4">
+                                                        <div class="col-12">
+                                                            <button class="btn btn-dark btn-block w-100" data-bs-toggle="modal" data-bs-target="#encerrarAnuncio">
+                                                                <% if(produto.CONDICAO_ANUNCIO == 1){ %> 
+                                                                    Encerrar Anuncio 
+                                                                <% } else { %> 
+                                                                        Reabrir Anuncio 
+                                                                <% } %>
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modal DELETAR -->
+                                <div class="modal fade" id="encerrarAnuncio" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="staticBackdropLabel">
+                                                    <% if(produto.CONDICAO_ANUNCIO == 1){ %> 
+                                                        Encerrar Anuncio 
+                                                    <% } else { %> 
+                                                        Reabrir Anuncio 
+                                                    <% } %>
+                                                </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form action="/produto/encerrarReabrirAnuncio" method="post">
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <% if(produto.CONDICAO_ANUNCIO == 1){%>
+                                                                <p>Ao encerrar um anuncio, o mesmo se tornará <b>privado</b> e mais nenhum outro usuário poderá visualiza-lo. Deseja realmente fazer isso?</p>
+                                                            <% } else{ %>
+                                                                <p>Ao reabrir um anuncio, o mesmo se tornará <b>público</b> e todos usuários poderão visualiza-lo. Deseja realmente fazer isso?</p>
+                                                            <% } %>
+                                                        </div>
+                                                    </div>
+                                                    <input type="hidden" name="id_produto" value="<%= produto.ID_PRODUTO %>" />
+                                                    <input type="hidden" name="condicaoAnuncio" value="<% if(produto.CONDICAO_ANUNCIO == 1){%>0<% } else{ %>1<% } %>">
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                    <% if(produto.CONDICAO_ANUNCIO == 1){ %> 
+                                                        <input class="btn btn-success float-end" type="submit" value="Encerrar"> 
+                                                    <% } else { %> 
+                                                        <input class="btn btn-success float-end" type="submit" name="enviar" value="Reabrir">
+                                                    <% } %>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -309,7 +362,7 @@
                                                 <div class="col">
                                                     <label for="condicao" class="float-start">Condição</label>
                                                     <select name="condicao" id="condicao" class="form-control" aria-label="Default select example" title="Selecione uma condição">
-                                                    <% if(produto.FK_ESTADO_PRODUTO == 1) { %>
+                                                    <% if(produto.FK_CONDICAO_PRODUTO == 1) { %>
                                                         <option value="1" selected="selected">Novo</option>
                                                         <option value="2">Usado</option>
                                                     <% } else { %>

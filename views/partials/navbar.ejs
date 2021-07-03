@@ -25,12 +25,12 @@
                     Notificações
                 </button>
 
-                <ul class="dropdown-menu p-4 dropdown-menu-end" aria-labelledby="dropdownMenuButton" style="width: 350px; max-height: 500px; overflow: auto">
-                    <h5>Notificações</h5>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton" style="width: 350px; max-height: 500px; overflow: auto">
+                    <h5 class="ps-3 pt-2">Notificações</h5>
                     <div class="dropdown-divider"></div>
                     <% notificacoes.forEach(notificacao => { %>
                         <% if(notificacoes.length >= 0) { %>
-                            <li class="nav-item mb-4">
+                            <li class="nav-item mb-2 px-3 py-2 notify">
                                 <a href="/produto/visualizar/<%= notificacao.TB_PRODUTO.SLUG_PRODUTO %>" class="text-dark texto_overflow_notif">
                                     <%= notificacao.DESCRICAO_NOTIFICACAO %>
                                 </a>
@@ -68,7 +68,7 @@
             <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
                 <ul class="navbar-nav">
                     <li class="nav-item mx-2">
-                        <a class="nav-link link-light sec-nav-link text-white" href="/produto/new">Anunciar Produto</a>
+                        <a class="nav-link link-light sec-nav-link text-white" href="#" onclick="MostraModalProduto()">Anunciar Produto</a>
                     </li>
                     <li class="nav-item dropdown mx-2">
                         <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -100,4 +100,8 @@
             </ul>
         </div>
     </nav>
+
+    <% if(typeof usuarioData !== 'undefined') { %>
+        <%- include("./anunciaProduto.ejs") %>
+    <% } %>
 </header>
